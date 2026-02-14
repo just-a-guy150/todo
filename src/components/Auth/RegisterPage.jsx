@@ -42,6 +42,20 @@ function RegisterPage(props) {
                     id='email'
                     {...register('login', {
                         required: true,
+                        pattern: {
+                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                            message: 'Invalid email format'
+                        }
+                    })}
+                />
+                <span></span>
+                <br />
+                <label htmlFor="password">Password</label>
+                <input
+                    type="password"
+                    id='password'
+                    {...register('login', {
+                        required: true,
                         minLength: {
                             value: 3,
                             message: 'Login must be at least 3 characters'
@@ -51,15 +65,11 @@ function RegisterPage(props) {
                             message: 'Login must be at most 20 characters'
                         },
                         pattern: {
-                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                            message: 'Login must contain only letters and numbers'
+                            value: /^[a-zA-Z0-9]+$/,
+                            message: 'Password must contain only letters and numbers'
                         }
                     })}
                 />
-                <span></span>
-                <br />
-                <label htmlFor="password">Password</label>
-                <input type="password" id='password' />
                 <span></span>
                 <br />
                 <label htmlFor="confirmPassword">Confirm Password</label>
