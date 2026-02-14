@@ -37,7 +37,25 @@ function RegisterPage(props) {
                 <span></span>
                 <br />
                 <label htmlFor="email">Email</label>
-                <input type="text" id='email' />
+                <input
+                    type="text"
+                    id='email'
+                    {...register('login', {
+                        required: true,
+                        minLength: {
+                            value: 3,
+                            message: 'Login must be at least 3 characters'
+                        },
+                        maxlength: {
+                            value: 20,
+                            message: 'Login must be at most 20 characters'
+                        },
+                        pattern: {
+                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                            message: 'Login must contain only letters and numbers'
+                        }
+                    })}
+                />
                 <span></span>
                 <br />
                 <label htmlFor="password">Password</label>
