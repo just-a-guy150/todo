@@ -6,6 +6,7 @@ import MCalendar from '../MCalendar/MCalendar'
 import { FaRegCalendarPlus } from "react-icons/fa"
 import { Routes, Route } from 'react-router'
 import RegisterPage from '../Auth/RegisterPage'
+import LoginPage from '../Auth/LoginPage'
 import Dcalendar from '../DCalendar/DCalendar'
 import Wcalendar from '../WCalendar/WCalendar'
 
@@ -25,6 +26,8 @@ function Main(props) {
                 <Route path="/week" element={<Wcalendar/>} />
                 <Route path="/day" element={<Dcalendar/>} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+
             </Routes>
         </div>
     )

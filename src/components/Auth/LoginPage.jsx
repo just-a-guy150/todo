@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import style from './Auth.module.scss'
 import { useForm } from 'react-hook-form'
 
-function RegisterPage(props) {
+function LoginPage(props) {
     const {
         register,
         handleSubmit,
@@ -12,30 +12,8 @@ function RegisterPage(props) {
     } = useForm()
     return (
         <div className={style.wrapper}>
-            <h1>Register</h1>
+            <h1>Login</h1>
             <form onSubmit={handleSubmit(props.onSubmit)}>
-                <label htmlFor="login">Login</label>
-                <input
-                    type="text"
-                    id='login'
-                    {...register('login', {
-                        required: true,
-                        minLength: {
-                            value: 3,
-                            message: 'Login must be at least 3 characters'
-                        },
-                        maxlength: {
-                            value: 20,
-                            message: 'Login must be at most 20 characters'
-                        },
-                        pattern: {
-                            value: /^[a-zA-Z0-9]+$/,
-                            message: 'Login must contain only letters and numbers'
-                        }
-                    })}
-                />
-                <span>{errors.login?.message}</span>
-                <br />
                 <label htmlFor="email">Email</label>
                 <input
                     type="text"
@@ -72,27 +50,12 @@ function RegisterPage(props) {
                 />
                 <span>{errors.password?.message}</span>
                 <br />
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                    type="password"
-                    id='confirmPassword'
-                    {...register('confirmPassword', {
-                        required: true,
-                        validate: (value) => {
-                            if (value !== watch('password')) {
-                                return 'Passwords do not match'
-                            }
-                        }
-                    })}
-                />
-                <span>{errors.confirmPassword?.message}</span>
-                <br />
-                <button className={style.btn}>Register</button>
+                <button className={style.btn}>Login</button>
             </form>
         </div>
     )
 }
 
-RegisterPage.propTypes = {}
+LoginPage.propTypes = {}
 
-export default RegisterPage
+export default LoginPage
