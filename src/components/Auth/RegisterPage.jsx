@@ -5,7 +5,10 @@ import { useForm } from 'react-hook-form'
 
 function RegisterPage(props) {
     const {
-
+        register,
+        handleSubmit,
+        formState: { errors },
+        watch
     } = useForm()
     return (
         <div className={style.wrapper}>
