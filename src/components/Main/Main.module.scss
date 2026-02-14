@@ -1,0 +1,24 @@
+.wrapper {
+    flex-grow: 1;
+    & .addButton {
+        position: fixed;
+        color: #fff;
+        bottom: 2rem;
+        right: 2rem;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background-color: rgb(2, 2, 135);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        box-shadow: 0 0 10px #000; 
+        transition: 0.3s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgb(75, 75, 249);
+        }
+    }
+}
