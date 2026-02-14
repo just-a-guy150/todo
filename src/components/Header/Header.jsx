@@ -12,7 +12,7 @@ function Header(props) {
                 <div className="title">RoboCalendar</div>
             </NavLink>
             <nav className={style.navBar}>
-            <NavLink to="/" className={({isActive}) => (isActive ? style.active : style.link)}>
+            <NavLink to="/month" className={({isActive}) => (isActive ? style.active : style.link)}>
                 <BsCalendar3/>
                 <span>Month</span>
             </NavLink>
