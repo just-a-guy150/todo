@@ -83,6 +83,11 @@ app.post('/login', async (req, res) => {
     }
 })
 
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+}
+
 app.get("/protected", (req, res) => {
     res.send({ message: `Hello ${req.user.login}` })
 })
