@@ -83,6 +83,10 @@ app.post('/login', async (req, res) => {
     }
 })
 
+app.get("/protected", (req, res) => {
+    res.send({ message: `Hello ${req.user.login}` })
+})
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
