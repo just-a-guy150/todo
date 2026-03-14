@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import style from './addForm.module.scss'
-
-import { ContextStore } from '../../store/contextStore'
+import { useDispatch } from 'react-redux'
+import { addEvent, closeModal } from '../CalendarReducer'
 
 function addForm(props) {
     const [title, setTitle] = useState('')
@@ -12,16 +12,14 @@ function addForm(props) {
     const titleRef = useRef(null)
     const dateRef = useRef(null)
 
-    let { addEvent } = React.useContext(ContextStore)
+    const dispatch = useDispatch()
 
 
     const handleSubmit = (e) => {
-        console.log(date);
-        
         e.preventDefault()
         if (correct) {
-            addEvent({title, date})
-            props.open(false)
+            dispatch(addEvent({ title, date }))
+            dispatch(closeModal())
         }
     }
 
@@ -72,7 +70,7 @@ function addForm(props) {
                     <span className={style.error} ref={dateRef}>Date is empty</span>
                 </div>
                 <button className={style.button} onClick={handleSubmit} disabled={!correct} >Add</button>
-                <button className={style.closeButton} onClick={() => props.open(false)}>✖</button>
+                <button className={style.closeButton} onClick={() => dispatch(closeModal())}>✖</button>
             </div>
         </div>
     )

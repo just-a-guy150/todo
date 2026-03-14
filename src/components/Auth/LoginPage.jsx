@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import style from './Auth.module.scss'
 import { useForm } from 'react-hook-form'
 
+import { useDispatch } from 'react-redux'
+import { setToken } from '../Auth/AuthReducer'
+import { data, useNavigate } from 'react-router'
+
 function LoginPage(props) {
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (data) {
+            dispatch(setToken(data.Token))
+            navigate('/')
+        }
+    }, [data])
     const {
         register,
         handleSubmit,
