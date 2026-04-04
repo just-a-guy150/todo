@@ -1,27 +1,108 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const initialState = {
-    token: null
+	token: null,
+	loading: false,
+	error: null
 }
 
 const AuthReducer = createSlice({
-    name: "Auth",
-    initialState,
-    reducers: {
-        uploadTokenFromStorage: (state) => {
-            state.token = localStorage.getItem('token') || null
-        },
-        setToken: (state) => {
-            state.token = localStorage.setItem('token')
-            localStorage.setItem('token')
-        },
-        removeToken: (state) => {
-            state.token = null
-            localStorage.removeItem('token')
-        }
-    }
+	name: "Auth",
+	initialState,
+	reducers: {
+		uploadTokenFromStorage: (state) => {
+			state.token = localStorage.getItem('token') || null
+		},
+		setToken: (state) => {
+			state.token = localStorage.setItem('token')
+			localStorage.setItem('token')
+		},
+		removeToken: (state) => {
+			state.token = null
+			localStorage.removeItem('token')
+		},
+		clearError: (state) => {
+			state.error = null
+		}
+	},
+	extraReducers: (builder) => {
+		builder.addCase(loginUser.pending, (state) => {
+			state.loading = true
+			state.error = null
+		}),
+		builder.addCase(loginUser.fulfilled, (state, action) => {
+			state.loading = false
+			state.token = action.payload.token
+			localStorage.setItem('token', action.payload.token)
+		}),
+		builder.addCase(loginUser.rejected, (state, action) => {
+			state.loading = false
+			state.error = action.payload?.error || action.error.message
+		}),
+		builder.addCase(registerUser.pending, (state) => {
+			state.loading = true	
+			state.error = null
+		}),
+		builder.addCase(registerUser.fulfilled, (state, action) => {
+			state.loading = false
+		}),
+		builder.addCase(registerUser.rejected, (state, action) => {
+			state.loading = false
+			state.error = action.payload?.error || action.error.message
+		})
+	}
 });
 
-export const {uploadTokenFromStorage, setToken, removeToken} = AuthReducer.actions
+export const loginUser = createAsyncThunk(
+	"auth/loginUser",
+	async (data, { rejectWithValue }) => {
+		try {
+			const response = await fetch("/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			let result = await response.json()
+
+			if (!response.ok) {
+				return rejectWithValue({ error: result.error })
+			}
+			return result
+		} catch (error) {
+			throw error;
+		}
+	}
+)
+
+export const registerUser = createAsyncThunk(
+	"auth/registerUser",
+	async (data, { rejectWithValue, dispatch }) => {
+		try {
+			const response = await fetch("/register", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			let result = await response.json()
+
+			if (!response.ok) {
+				return rejectWithValue({ error: result.error })
+			}
+
+			result = await dispatch(loginUser(data))
+			return result
+		} catch (error) {
+			throw error;
+		}
+	}
+)
+
+export const { uploadTokenFromStorage, setToken, removeToken, clearError } = AuthReducer.actions
 
 export default AuthReducer.reducer

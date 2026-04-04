@@ -1,11 +1,21 @@
-import React, { useState } from 'react'
-import PropTypes, { array } from 'prop-types'
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import style from './MCalendar.module.scss'
 // import { ContextStore } from '../../store/contextStore'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router'
+import { changeMonth, removeEvent } from '../CalendarReducer'
 
-import { useSelector } from 'react-redux'
 
 function MCalendar(props) {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { token } = useSelector((state) => state.auth)
+    useEffect(() => {
+        if (!token) {
+            navigate('/login')
+        }
+    }, [token])
     const getCalendarDates = (year, month) => {
         const startOfMonth = new Date(year, month, 0)
         const endOfMonth = new Date(year, month + 1, 0)
@@ -26,7 +36,7 @@ function MCalendar(props) {
 
     let events = useSelector((state) => state.calendars.events)
 
-    const [currentDate, setCurrentDate] = useState(new Date())
+    const currentDate = new Date(useSelector((state) => state.calendars.month))
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth()
     const dates = getCalendarDates(year, month)
@@ -34,6 +44,13 @@ function MCalendar(props) {
     return (
         <div className={style.wrapper}>
             <div className={style.container}>
+                <div className={style.header}>
+                    <input
+                        value={currentDate.toISOString().split("T")[0].slice(0, 7)}
+                        onChange={(e) => dispatch(changeMonth(e.target.value))}
+                        type="month"
+                    />
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -71,6 +88,7 @@ function MCalendar(props) {
                                                     <button
                                                         key={i}
                                                         className={style.event}
+                                                        onClick={() => dispatch(removeEvent(event.id))}
                                                     >
                                                         {event.title}
                                                     </button>

@@ -9,6 +9,14 @@ const app = express()
 const port = 3000
 
 app.use(express.json())
+app.use(express.static('dist'))
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+})
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -20,7 +28,7 @@ const pool = mysql.createPool({
 })
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.sendFile("index.html")
 })
 
 app.post('/register', async (req, res) => {
@@ -106,27 +114,26 @@ app.get("/protected", authenticateToken, (req, res) => {
     res.send({ message: `Hello ${req.user.id}` })
 })
 
-
-app.post("/addEvent", authenticateToken, async (req, res) => {
-    const { title, data } = req.body
-    try {
-        await pool.query(
-            `INSERT INTO events (title, data, user_id) VALUES (?, ?, ?)`,
-            [title, data, req.user.id]
-        )
-        res.status(201).send({ message: "Event added successfully" })
-    } catch (error) {
-        res.status(500).send({ error: "Error adding event" })
-    }
+app.post("/add", authenticateToken, async (req, res) => {
+    const data = req.body
+    data.user_id = req.user.id
+    await pool.query(`INSERT INTO events SET ?`, data)
+    let result = await pool.query(`SELECT * FROM events WHERE user_id = ?`, [req.user.id])
+    res.send(result[0])
 })
 
-app.get("/getEvents", authenticateToken, async (req, res) => {
-    try {
-        const [events] = await pool.query(`SELECT * FROM events`)
-        res.status(200).send(events)
-    } catch (error) {
-        res.status(500).send({ error: "Error fetching events" })
+app.get("/events", authenticateToken, async (req, res) => {
+    let result = await pool.query(`SELECT * FROM events WHERE user_id = ?`, [req.user.id])
+    if (result[0].length === 0) {
+        return res.status(404).send({ error: "No events found" })
     }
+    res.send(result[0])
+})
+
+app.delete("/removeEvent/:id", authenticateToken, async (req, res) => {
+    await pool.query(`DELETE FROM events WHERE id = ?`, [req.params.id])
+    let result = await pool.query(`SELECT * FROM events WHERE user_id = ?`, [req.user.id])
+    res.send(result[0])
 })
 
 app.listen(port, () => {

@@ -19,20 +19,22 @@ function Main(props) {
     let dispatch = useDispatch()
     return (
         <div className={style.wrapper}>
-            {modalState && <AddForm/>}
-            <button
-                className={style.addButton}
-                onClick={() => dispatch(openModal())}
-            >
-                <FaRegCalendarPlus />
-            </button>
-            <Routes>
-                <Route path="/" element={<RegisterPage />} />
-                <Route path="/month" element={<MCalendar />} />
-                <Route path="/week" element={<Wcalendar/>} />
-                <Route path="/day" element={<Dcalendar/>} />
-                <Route path="/login" element={<LoginPage />} />
 
+            {isAuthenticated && <>
+                {modalState && <AddForm />}
+                <button
+                    className={style.addButton}
+                    onClick={() => dispatch(openModal())}
+                >
+                    <FaRegCalendarPlus />
+                </button>
+            </>}
+            <Routes>
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/" element={<MCalendar />} />
+                <Route path="/week" element={<Wcalendar />} />
+                <Route path="/day" element={<Dcalendar />} />
+                <Route path="/login" element={<LoginPage />} />
             </Routes>
         </div>
     )

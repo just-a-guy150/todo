@@ -1,19 +1,39 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import style from './Auth.module.scss'
 import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router'
+import { registerUser, clearError } from '../Auth/authReducer'
 
 function RegisterPage(props) {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { loading, error, token } = useSelector((state) => state.auth)
     const {
         register,
         handleSubmit,
         formState: { errors },
         watch
     } = useForm()
+
+    useEffect(() => {
+        if (error) {
+            alert(error)
+            dispatch(clearError())
+        }
+        if (token) {
+            navigate('/')
+        }
+    }, [error, token])
+
+    let onSubmit = (data) => {
+        dispatch(registerUser(data))
+    }
     return (
         <div className={style.wrapper}>
             <h1>Register</h1>
-            <form onSubmit={handleSubmit(props.onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <label htmlFor="login">Login</label>
                 <input
                     type="text"
@@ -57,7 +77,7 @@ function RegisterPage(props) {
                     {...register('password', {
                         required: true,
                         minLength: {
-                            value: 3,
+                            value: 6,
                             message: 'Password must be at least 3 characters'
                         },
                         maxlength: {

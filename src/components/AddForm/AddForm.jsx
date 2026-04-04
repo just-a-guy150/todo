@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import style from './addForm.module.scss'
 import { useDispatch } from 'react-redux'
-import { addEvent, closeModal } from '../CalendarReducer'
+import { addNewEvent, closeModal } from '../CalendarReducer'
 
 function addForm(props) {
     const [title, setTitle] = useState('')
@@ -18,7 +18,7 @@ function addForm(props) {
     const handleSubmit = (e) => {
         e.preventDefault()
         if (correct) {
-            dispatch(addEvent({ title, date }))
+            dispatch(addNewEvent({ title, date }))
             dispatch(closeModal())
         }
     }
